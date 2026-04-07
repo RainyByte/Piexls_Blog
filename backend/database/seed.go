@@ -9,13 +9,19 @@ import (
 )
 
 func SeedAdmin(db *gorm.DB, username, password string) {
+	if password == "" {
+		log.Fatal("ADMIN_PASS environment variable must be set")
+	}
+
 	var count int64
-	db.Model(&models.User{}).Count(&count)
+	if err := db.Model(&models.User{}).Count(&count).Error; err != nil {
+		log.Fatal("Failed to count users:", err)
+	}
 	if count > 0 {
 		return
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatal("Failed to hash admin password:", err)
 	}

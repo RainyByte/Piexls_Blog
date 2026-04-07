@@ -25,7 +25,9 @@ func Init(dbPath string) *gorm.DB {
 	}
 
 	// Enable WAL mode for better concurrent read performance
-	db.Exec("PRAGMA journal_mode=WAL")
+	if err := db.Exec("PRAGMA journal_mode=WAL").Error; err != nil {
+		log.Fatal("Failed to set WAL mode:", err)
+	}
 
 	// Auto-migrate all models
 	err = db.AutoMigrate(

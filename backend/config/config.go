@@ -18,7 +18,7 @@ func Load() *Config {
 		UploadPath: getEnv("UPLOAD_PATH", "./uploads"),
 		JWTSecret:  getEnv("JWT_SECRET", "change-me-in-production"),
 		AdminUser:  getEnv("ADMIN_USER", "admin"),
-		AdminPass:  getEnv("ADMIN_PASS", "admin123"),
+		AdminPass:  getEnv("ADMIN_PASS", ""),
 	}
 }
 

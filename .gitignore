@@ -1,0 +1,6 @@
+data/blog.db
+backend/uploads/
+.superpowers/
+.env
+frontend/node_modules/
+frontend/.next/

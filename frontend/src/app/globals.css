@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --color-bg: #FFFFFF;
+  --color-bg-secondary: #F5F5F5;
+  --color-text: #2D2D2D;
+  --color-text-secondary: #6B6B6B;
+  --color-border: #2D2D2D;
+  --color-shadow: #2D2D2D;
+  --color-primary: #4A90D9;
+  --color-yellow: #F5A623;
+  --color-green: #7ED6A4;
+  --color-red: #E85D75;
+  --pixel-border: 3px;
+  --pixel-shadow: 3px;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-body: 'Inter', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+}
+
+[data-theme="dark"] {
+  --color-bg: #1A1A2E;
+  --color-bg-secondary: #25253E;
+  --color-text: #E0E0E0;
+  --color-text-secondary: #A0A0B0;
+  --color-border: #E0E0E0;
+  --color-shadow: #E0E0E0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: background 0.2s, color 0.2s;
+}
+
+.pixel-border {
+  border: var(--pixel-border) solid var(--color-border);
+  box-shadow: var(--pixel-shadow) var(--pixel-shadow) 0px var(--color-shadow);
+}
+
+.pixel-border-hover {
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.pixel-border-hover:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--color-shadow);
+}
+
+.pixel-border-hover:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--color-shadow);
+}
+
+pre code {
+  font-family: var(--font-code);
+}
+
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

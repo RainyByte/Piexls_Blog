@@ -1,3 +1,5 @@
+"use client";
+
 import { PixelCard } from "@/components/pixel";
 
 export default function ProfileCard() {

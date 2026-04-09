@@ -10,7 +10,7 @@ interface CategoryFilterProps {
 export default function CategoryFilter({ categories, currentSlug }: CategoryFilterProps) {
   return (
     <PixelCard>
-      <h3 className="font-pixel text-[0.55rem] mb-3 text-text-secondary">// CATEGORIES</h3>
+      <h3 className="font-pixel text-[0.55rem] mb-3 text-text-secondary">{"// CATEGORIES"}</h3>
       <div className="flex flex-col gap-1.5">
         <Link
           href="/"

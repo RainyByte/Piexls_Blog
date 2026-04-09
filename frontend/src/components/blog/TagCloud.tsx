@@ -12,7 +12,7 @@ export default function TagCloud({ tags, currentSlug }: TagCloudProps) {
 
   return (
     <PixelCard>
-      <h3 className="font-pixel text-[0.55rem] mb-3 text-text-secondary">// TAGS</h3>
+      <h3 className="font-pixel text-[0.55rem] mb-3 text-text-secondary">{"// TAGS"}</h3>
       <div className="flex flex-wrap gap-1.5">
         {tags.map((tag) => (
           <Link key={tag.id} href={`/tag/${tag.slug}`}>

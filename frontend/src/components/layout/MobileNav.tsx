@@ -25,7 +25,7 @@ export default function MobileNav({ categories }: MobileNavProps) {
         <div className="md:hidden fixed inset-0 z-40">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
           <div className="absolute right-0 top-0 h-full w-64 bg-bg pixel-border p-4 overflow-y-auto">
-            <h3 className="font-pixel text-[0.55rem] mb-4 mt-12 text-text-secondary">// CATEGORIES</h3>
+            <h3 className="font-pixel text-[0.55rem] mb-4 mt-12 text-text-secondary">{"// CATEGORIES"}</h3>
             <div className="flex flex-col gap-2">
               {categories.map((cat) => (
                 <Link

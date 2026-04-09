@@ -1,9 +1,13 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:alpine AS builder
 WORKDIR /app
+ENV GOPROXY=https://goproxy.cn,direct
+ENV CGO_ENABLED=0
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o server main.go
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg/mod \
+    go build -o server main.go
 
 FROM alpine:3.19
 RUN apk add --no-cache ca-certificates

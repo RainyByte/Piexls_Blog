@@ -82,7 +82,7 @@ export default function MusicPlayer() {
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
         onEnded={next}
       />
-      <h3 className="font-pixel text-[0.5rem] mb-2 text-text-secondary">// NOW PLAYING</h3>
+      <h3 className="font-pixel text-[0.5rem] mb-2 text-text-secondary">{"// NOW PLAYING"}</h3>
       <div className="flex items-center gap-3">
         <VinylRecord
           coverUrl={currentTrack?.cover_path ? `/uploads/${currentTrack.cover_path}` : undefined}

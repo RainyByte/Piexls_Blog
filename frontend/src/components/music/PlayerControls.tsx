@@ -9,7 +9,7 @@ interface PlayerControlsProps {
   onCycleRepeat: () => void;
 }
 
-const repeatIcons = { none: "➡️", all: "🔁", one: "🔂" };
+const repeatLabels = { none: "->", all: "ALL", one: "1" };
 
 export default function PlayerControls({
   isPlaying,
@@ -20,25 +20,37 @@ export default function PlayerControls({
   onCycleRepeat,
 }: PlayerControlsProps) {
   return (
-    <div className="flex items-center gap-1">
-      <button onClick={onPrev} className="w-6 h-6 flex items-center justify-center text-xs hover:text-primary">
-        ⏮
+    <div className="flex items-center gap-1 mt-1">
+      <button
+        onClick={onPrev}
+        className="w-6 h-6 flex items-center justify-center font-pixel text-[0.4rem] hover:text-primary cursor-pointer"
+        aria-label="Previous track"
+      >
+        {"<<"}
       </button>
       <button
         onClick={onToggle}
-        className="w-8 h-8 flex items-center justify-center pixel-border pixel-border-hover bg-bg text-sm"
+        className="w-7 h-7 flex items-center justify-center pixel-border pixel-border-hover bg-bg font-pixel text-[0.5rem]"
+        aria-label={isPlaying ? "Pause" : "Play"}
       >
-        {isPlaying ? "⏸" : "▶️"}
+        {isPlaying ? "||" : ">"}
       </button>
-      <button onClick={onNext} className="w-6 h-6 flex items-center justify-center text-xs hover:text-primary">
-        ⏭
+      <button
+        onClick={onNext}
+        className="w-6 h-6 flex items-center justify-center font-pixel text-[0.4rem] hover:text-primary cursor-pointer"
+        aria-label="Next track"
+      >
+        {">>"}
       </button>
       <button
         onClick={onCycleRepeat}
-        className="w-6 h-6 flex items-center justify-center text-[0.5rem] hover:text-primary"
+        className={`w-6 h-6 flex items-center justify-center font-pixel text-[0.35rem] hover:text-primary cursor-pointer ${
+          repeatMode !== "none" ? "text-primary" : ""
+        }`}
         title={`Repeat: ${repeatMode}`}
+        aria-label={`Repeat mode: ${repeatMode}`}
       >
-        {repeatIcons[repeatMode]}
+        {repeatLabels[repeatMode]}
       </button>
     </div>
   );

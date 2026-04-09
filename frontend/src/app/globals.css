@@ -1,12 +1,8 @@
+@import url('https://fonts.loli.net/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@font-face {
-  font-family: 'Press Start 2P';
-  src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
-  font-display: swap;
-}
 
 :root {
   --color-bg: #FFFFFF;
@@ -16,11 +12,12 @@
   --color-border: #2D2D2D;
   --color-shadow: #2D2D2D;
   --color-primary: #4A90D9;
+  --color-accent: #F97316;
   --color-yellow: #F5A623;
   --color-green: #7ED6A4;
   --color-red: #E85D75;
   --pixel-border: 3px;
-  --pixel-shadow: 3px;
+  --pixel-shadow: 4px;
   --font-pixel: 'Press Start 2P', monospace;
   --font-body: 'Inter', sans-serif;
   --font-code: 'JetBrains Mono', monospace;
@@ -53,15 +50,16 @@ body {
 
 .pixel-border-hover {
   transition: transform 0.1s, box-shadow 0.1s;
+  cursor: pointer;
 }
 
 .pixel-border-hover:hover {
   transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px var(--color-shadow);
+  box-shadow: 2px 2px 0px var(--color-shadow);
 }
 
 .pixel-border-hover:active {
-  transform: translate(3px, 3px);
+  transform: translate(4px, 4px);
   box-shadow: 0px 0px 0px var(--color-shadow);
 }
 
@@ -72,4 +70,14 @@ pre code {
 .pixel-art {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+}
+
+/* Marquee scrolling animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
 }

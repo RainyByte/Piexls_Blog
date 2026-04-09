@@ -10,23 +10,28 @@ interface CategoryFilterProps {
 export default function CategoryFilter({ categories, currentSlug }: CategoryFilterProps) {
   return (
     <PixelCard>
-      <h3 className="font-pixel text-[0.65rem] mb-3">分类</h3>
-      <div className="flex flex-col gap-2">
+      <h3 className="font-pixel text-[0.55rem] mb-3 text-text-secondary">// CATEGORIES</h3>
+      <div className="flex flex-col gap-1.5">
         <Link
           href="/"
-          className={`text-sm hover:text-primary ${!currentSlug ? "text-primary font-bold" : ""}`}
+          className={`flex items-center justify-between py-1.5 px-2 text-sm hover:text-primary transition-colors ${
+            !currentSlug ? "text-primary font-semibold bg-bg-secondary" : ""
+          }`}
         >
-          📁 全部
+          <span>All</span>
         </Link>
         {categories.map((cat) => (
           <Link
             key={cat.id}
             href={`/category/${cat.slug}`}
-            className={`text-sm hover:text-primary ${
-              currentSlug === cat.slug ? "text-primary font-bold" : ""
+            className={`flex items-center justify-between py-1.5 px-2 text-sm hover:text-primary transition-colors ${
+              currentSlug === cat.slug ? "text-primary font-semibold bg-bg-secondary" : ""
             }`}
           >
-            📁 {cat.name} ({cat.post_count || 0})
+            <span>{cat.name}</span>
+            <span className="font-pixel text-[0.4rem] px-1.5 py-0.5 bg-text text-bg min-w-[1.5rem] text-center">
+              {cat.post_count || 0}
+            </span>
           </Link>
         ))}
       </div>

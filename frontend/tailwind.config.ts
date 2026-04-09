@@ -14,6 +14,7 @@ const config: Config = {
         border: "var(--color-border)",
         shadow: "var(--color-shadow)",
         primary: "var(--color-primary)",
+        accent: "var(--color-accent)",
         yellow: "var(--color-yellow)",
         green: "var(--color-green)",
         red: "var(--color-red)",

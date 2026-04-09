@@ -1,6 +1,7 @@
 import { getPost, getCategories, getTags, getPosts } from "@/lib/api";
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
+import Footer from "@/components/layout/Footer";
 import PostContent from "@/components/blog/PostContent";
 import { PixelCard, PixelTag } from "@/components/pixel";
 import Link from "next/link";
@@ -31,6 +32,18 @@ export default async function PostPage({ params }: Props) {
 
   const [categories, tags] = await Promise.all([getCategories(), getTags()]);
 
+  const dateStr = post.published_at
+    ? new Date(post.published_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : new Date(post.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+
   return (
     <>
       <Header />
@@ -54,12 +67,13 @@ export default async function PostPage({ params }: Props) {
               <h1 className="font-pixel text-sm md:text-base leading-relaxed mb-2">
                 {post.title}
               </h1>
-              <div className="text-text-secondary text-xs mb-6">
-                {post.published_at
-                  ? new Date(post.published_at).toLocaleDateString("zh-CN")
-                  : new Date(post.created_at).toLocaleDateString("zh-CN")}
-                {" · "}
-                {post.reading_time} min read
+              <div className="flex items-center gap-3 text-text-secondary text-xs mb-6">
+                <span className="flex items-center gap-1">
+                  <span>&#9635;</span> {dateStr}
+                </span>
+                <span className="flex items-center gap-1">
+                  <span>&#9719;</span> {post.reading_time} min read
+                </span>
               </div>
               {post.cover_image && (
                 <img
@@ -73,6 +87,7 @@ export default async function PostPage({ params }: Props) {
           </article>
         </div>
       </main>
+      <Footer />
     </>
   );
 }

@@ -6,10 +6,10 @@ import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const navItems = [
-  { href: "/admin/posts", label: "📝 文章" },
-  { href: "/admin/categories", label: "📁 分类" },
-  { href: "/admin/tags", label: "🏷️ 标签" },
-  { href: "/admin/music", label: "🎵 音乐" },
+  { href: "/admin/posts", label: "Posts" },
+  { href: "/admin/categories", label: "Categories" },
+  { href: "/admin/tags", label: "Tags" },
+  { href: "/admin/music", label: "Music" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -51,17 +51,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-bg">
-      <header className="pixel-border bg-bg mb-4">
-        <div className="max-w-[1200px] mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="font-pixel text-xs text-primary">
-            🎮 PIXEL BLOG
+      <header className="pixel-border bg-bg mb-6">
+        <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="font-pixel text-sm text-primary hover:opacity-80">
+            PIXEL BLOG
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-pixel text-[0.55rem] ${
+                className={`font-pixel text-[0.5rem] transition-colors ${
                   pathname.startsWith(item.href) ? "text-primary" : "hover:text-primary"
                 }`}
               >
@@ -74,9 +74,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 localStorage.removeItem("token");
                 router.push("/admin/login");
               }}
-              className="font-pixel text-[0.55rem] text-red hover:opacity-80"
+              className="font-pixel text-[0.5rem] text-red hover:opacity-80 cursor-pointer"
             >
-              退出
+              Logout
             </button>
           </div>
         </div>

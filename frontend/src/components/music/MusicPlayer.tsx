@@ -88,7 +88,8 @@ export default function MusicPlayer() {
         audio.load();
       }
       play(); // Update UI immediately
-      audio.play().catch(() => {
+      audio.play().catch((err) => {
+        console.warn("audio.play() failed:", err, "src:", audio.src);
         pause(); // Revert on failure
       });
     }
@@ -131,7 +132,10 @@ export default function MusicPlayer() {
         onEnded={handleEnded}
         onError={(e) => {
           const err = e.currentTarget.error;
-          if (err) console.warn("Audio error:", err.message, "code:", err.code);
+          if (err) {
+            console.warn("Audio error:", err.message, "code:", err.code, "src:", e.currentTarget.src);
+            pause(); // Sync store state so UI reflects that playback stopped
+          }
         }}
       />
       <h3 className="font-pixel text-[0.5rem] mb-2 text-text-secondary">{"// NOW PLAYING"}</h3>

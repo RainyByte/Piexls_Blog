@@ -8,6 +8,7 @@ import { PixelButton, PixelInput, PixelSelect, PixelToggle, PixelTag } from "@/c
 import { PixelTextarea } from "@/components/pixel/PixelInput";
 import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import ImageUploader from "@/components/admin/ImageUploader";
+import MarkdownImporter from "@/components/admin/MarkdownImporter";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -109,6 +110,10 @@ export default function NewPostPage() {
 
         <PixelToggle checked={isPublished} onChange={setIsPublished} label="发布" />
 
+        <div className="flex items-center gap-3 mb-1">
+          <label className="font-pixel text-xs text-text-secondary">内容</label>
+          <MarkdownImporter onImport={setContent} />
+        </div>
         <MarkdownEditor value={content} onChange={setContent} />
 
         <div className="flex gap-3">

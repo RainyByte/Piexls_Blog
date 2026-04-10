@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useMusicStore } from "@/stores/musicStore";
 import { getMusic } from "@/lib/api";
 import { PixelCard } from "@/components/pixel";
@@ -9,6 +9,7 @@ import PlayerControls from "./PlayerControls";
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const lastSrcRef = useRef<string>("");
   const {
     playlist,
     currentIndex,
@@ -16,7 +17,8 @@ export default function MusicPlayer() {
     volume,
     repeatMode,
     setPlaylist,
-    toggle,
+    play,
+    pause,
     next,
     prev,
     seek,
@@ -28,42 +30,87 @@ export default function MusicPlayer() {
     duration,
   } = useMusicStore();
 
+  const currentTrack = playlist[currentIndex];
+
+  // Fetch playlist on mount
   useEffect(() => {
     getMusic().then(setPlaylist).catch(() => {});
   }, [setPlaylist]);
 
-  // Sync audio src when track changes
+  // Load new track when track changes
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || playlist.length === 0) return;
-    const track = playlist[currentIndex];
-    if (!track) return;
-    const src = `/uploads/${track.file_path}`;
-    if (audio.src !== window.location.origin + src) {
-      audio.src = src;
-      audio.load();
-      if (isPlaying) audio.play().catch(() => {});
-    }
-  }, [currentIndex, playlist]);
+    if (!audio || !currentTrack) return;
 
-  // Sync play/pause
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !audio.src) return;
+    const newSrc = `/uploads/${currentTrack.file_path}`;
+    if (lastSrcRef.current === newSrc) return;
+    lastSrcRef.current = newSrc;
+
+    audio.src = newSrc;
+    audio.load();
+
+    // Auto-play new track if already in playing state (e.g. next/prev)
     if (isPlaying) {
       audio.play().catch(() => {});
-    } else {
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack?.file_path]);
+
+  // Pause audio when store sets isPlaying=false (e.g. end of playlist)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!isPlaying && !audio.paused) {
       audio.pause();
     }
   }, [isPlaying]);
 
   // Sync volume
   useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) audio.volume = volume / 100;
+    if (audioRef.current) audioRef.current.volume = volume / 100;
   }, [volume]);
 
-  const currentTrack = playlist[currentIndex];
+  // Play/pause via direct click handler (user gesture context for Safari)
+  const handleToggle = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+
+    if (isPlaying) {
+      audio.pause();
+      pause();
+    } else {
+      // Ensure source is loaded
+      const expectedSrc = `/uploads/${currentTrack.file_path}`;
+      if (lastSrcRef.current !== expectedSrc) {
+        lastSrcRef.current = expectedSrc;
+        audio.src = expectedSrc;
+        audio.load();
+      }
+      play(); // Update UI immediately
+      audio.play().catch(() => {
+        pause(); // Revert on failure
+      });
+    }
+  }, [isPlaying, currentTrack, play, pause]);
+
+  // Handle track ended — repeat-one restarts, otherwise advance
+  const handleEnded = useCallback(() => {
+    const audio = audioRef.current;
+    if (repeatMode === "one" && audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } else {
+      next();
+    }
+  }, [repeatMode, next]);
+
+  const handleSeek = useCallback(
+    (time: number) => {
+      seek(time);
+      if (audioRef.current) audioRef.current.currentTime = time;
+    },
+    [seek]
+  );
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -80,7 +127,11 @@ export default function MusicPlayer() {
         preload="auto"
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-        onEnded={next}
+        onEnded={handleEnded}
+        onError={(e) => {
+          const err = e.currentTarget.error;
+          if (err) console.warn("Audio error:", err.message, "code:", err.code);
+        }}
       />
       <h3 className="font-pixel text-[0.5rem] mb-2 text-text-secondary">{"// NOW PLAYING"}</h3>
       <div className="flex items-center gap-3">
@@ -95,7 +146,7 @@ export default function MusicPlayer() {
           </p>
           <PlayerControls
             isPlaying={isPlaying}
-            onToggle={toggle}
+            onToggle={handleToggle}
             onPrev={prev}
             onNext={next}
             repeatMode={repeatMode}
@@ -111,9 +162,7 @@ export default function MusicPlayer() {
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const pct = (e.clientX - rect.left) / rect.width;
-            const time = pct * duration;
-            seek(time);
-            if (audioRef.current) audioRef.current.currentTime = time;
+            handleSeek(pct * duration);
           }}
         >
           <div

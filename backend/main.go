@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zyx/pixel-blog-backend/config"
@@ -16,6 +17,11 @@ func main() {
 
 	db := database.Init(cfg.DBPath)
 	database.SeedAdmin(db, cfg.AdminUser, cfg.AdminPass)
+
+	// Ensure upload directories exist
+	for _, sub := range []string{"images", "music"} {
+		os.MkdirAll(cfg.UploadPath+"/"+sub, 0755)
+	}
 
 	r := gin.Default()
 	r.Use(middleware.CORS())

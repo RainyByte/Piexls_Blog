@@ -9,7 +9,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN mkdir -p public
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_OPTIONS=--max-old-space-size=384
+ENV NODE_OPTIONS=--max-old-space-size=512
 RUN npm run build
 
 FROM node:20-alpine AS runner

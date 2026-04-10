@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminCreatePost, getCategories, getTags } from "@/lib/api";
+import { getMediaUrl } from "@/lib/media";
 import { Category, Tag } from "@/types";
 import { PixelButton, PixelInput, PixelSelect, PixelToggle, PixelTag } from "@/components/pixel";
 import { PixelTextarea } from "@/components/pixel/PixelInput";
@@ -103,7 +104,7 @@ export default function NewPostPage() {
           <div className="flex items-center gap-3">
             <ImageUploader onUpload={setCoverImage} />
             {coverImage && (
-              <img src={coverImage} alt="Cover" className="h-12 pixel-border" />
+              <img src={getMediaUrl(coverImage)} alt="Cover" className="h-12 pixel-border" />
             )}
           </div>
         </div>

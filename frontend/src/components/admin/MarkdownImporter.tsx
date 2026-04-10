@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { adminUploadImage } from "@/lib/api";
 import { PixelButton } from "@/components/pixel";
 
 interface MarkdownImporterProps {
   onImport: (content: string) => void;
 }
+
+type BrowserFile = File & {
+  webkitRelativePath?: string;
+};
 
 function extractImagePaths(content: string): string[] {
   const paths: string[] = [];
@@ -24,12 +28,56 @@ function extractImagePaths(content: string): string[] {
   return Array.from(new Set(paths));
 }
 
+function normalizePath(path: string) {
+  return path.replace(/\\/g, "/").replace(/^\.\//, "").toLowerCase();
+}
+
+function getPathCandidates(path: string) {
+  const normalized = normalizePath(path);
+  const segments = normalized.split("/").filter(Boolean);
+  const candidates = new Set<string>([normalized]);
+
+  for (let i = 1; i < segments.length; i += 1) {
+    candidates.add(segments.slice(i).join("/"));
+  }
+
+  if (segments.length > 0) {
+    candidates.add(segments[segments.length - 1]);
+  }
+
+  return Array.from(candidates);
+}
+
+function findMatchingFile(imagePath: string, files: BrowserFile[]) {
+  const candidates = getPathCandidates(imagePath);
+
+  return files.find((file) => {
+    const relativePath = normalizePath(file.webkitRelativePath || "");
+    const fileName = normalizePath(file.name);
+
+    return candidates.some(
+      (candidate) =>
+        candidate === relativePath ||
+        candidate === fileName ||
+        (relativePath !== "" && relativePath.endsWith(`/${candidate}`))
+    );
+  });
+}
+
 export default function MarkdownImporter({ onImport }: MarkdownImporterProps) {
   const mdInputRef = useRef<HTMLInputElement>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
   const [mdContent, setMdContent] = useState<string | null>(null);
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const input = imgInputRef.current;
+    if (!input) return;
+
+    input.setAttribute("webkitdirectory", "");
+    input.setAttribute("directory", "");
+  }, []);
 
   const handleMdFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,22 +109,26 @@ export default function MarkdownImporter({ onImport }: MarkdownImporterProps) {
     setImporting(true);
     try {
       let content = mdContent;
-      const fileArray = Array.from(files);
+      const fileArray = Array.from(files) as BrowserFile[];
+      const missingImages: string[] = [];
 
       for (const imagePath of pendingImages) {
-        // Match by filename (the last segment of the path)
-        const fileName = imagePath.split("/").pop() || imagePath;
-        const matched = fileArray.find((f) => f.name === fileName);
+        const matched = findMatchingFile(imagePath, fileArray);
 
         if (matched) {
           try {
             const data = await adminUploadImage(matched);
-            // Replace all occurrences of this path
             content = content.split(imagePath).join(data.url);
           } catch {
-            console.warn(`Failed to upload: ${fileName}`);
+            missingImages.push(imagePath);
           }
+        } else {
+          missingImages.push(imagePath);
         }
+      }
+
+      if (missingImages.length > 0) {
+        alert(`以下图片未成功匹配或上传，将保留原路径：\n${missingImages.join("\n")}`);
       }
 
       onImport(content);
@@ -142,7 +194,7 @@ export default function MarkdownImporter({ onImport }: MarkdownImporterProps) {
               onClick={() => imgInputRef.current?.click()}
               disabled={importing}
             >
-              {importing ? "上传中..." : "选择图片文件"}
+              {importing ? "上传中..." : "选择图片或图片目录"}
             </PixelButton>
             <PixelButton variant="secondary" size="sm" onClick={handleCancel}>
               跳过图片

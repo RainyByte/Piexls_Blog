@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
+import { getMediaUrl } from "@/lib/media";
 import "highlight.js/styles/github-dark.css";
 
 interface PostContentProps {
@@ -46,7 +47,7 @@ export default function PostContent({ content }: PostContentProps) {
             </a>
           ),
           img: ({ src, alt }) => (
-            <img src={src} alt={alt || ""} className="pixel-border max-w-full" />
+            <img src={getMediaUrl(src)} alt={alt || ""} className="pixel-border max-w-full" />
           ),
           blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-primary pl-4 italic text-text-secondary">

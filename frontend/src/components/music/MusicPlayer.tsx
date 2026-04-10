@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useMusicStore } from "@/stores/musicStore";
 import { getMusic } from "@/lib/api";
+import { getMediaUrl } from "@/lib/media";
 import { PixelCard } from "@/components/pixel";
 import VinylRecord from "./VinylRecord";
 import PlayerControls from "./PlayerControls";
@@ -42,7 +43,7 @@ export default function MusicPlayer() {
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
 
-    const newSrc = `/uploads/${currentTrack.file_path}`;
+    const newSrc = getMediaUrl(currentTrack.file_path);
     if (lastSrcRef.current === newSrc) return;
     lastSrcRef.current = newSrc;
 
@@ -80,7 +81,7 @@ export default function MusicPlayer() {
       pause();
     } else {
       // Ensure source is loaded
-      const expectedSrc = `/uploads/${currentTrack.file_path}`;
+      const expectedSrc = getMediaUrl(currentTrack.file_path);
       if (lastSrcRef.current !== expectedSrc) {
         lastSrcRef.current = expectedSrc;
         audio.src = expectedSrc;
@@ -136,7 +137,7 @@ export default function MusicPlayer() {
       <h3 className="font-pixel text-[0.5rem] mb-2 text-text-secondary">{"// NOW PLAYING"}</h3>
       <div className="flex items-center gap-3">
         <VinylRecord
-          coverUrl={currentTrack?.cover_path ? `/uploads/${currentTrack.cover_path}` : undefined}
+          coverUrl={getMediaUrl(currentTrack?.cover_path)}
           isPlaying={isPlaying}
         />
         <div className="flex-1 min-w-0">

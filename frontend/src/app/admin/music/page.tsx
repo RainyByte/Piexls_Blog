@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { getMusic, adminCreateMusic, adminDeleteMusic, adminReorderMusic } from "@/lib/api";
+import { getMediaUrl } from "@/lib/media";
 import { MusicTrack } from "@/types";
 import { PixelButton, PixelInput, PixelCard, PixelModal } from "@/components/pixel";
 
@@ -83,7 +84,7 @@ export default function AdminMusicPage() {
                 <button onClick={() => moveTrack(i, 1)} disabled={i === tracks.length - 1} className="text-xs disabled:opacity-30">▼</button>
               </div>
               {track.cover_path ? (
-                <img src={`/uploads/${track.cover_path}`} alt="" className="w-10 h-10 pixel-border object-cover" />
+                <img src={getMediaUrl(track.cover_path)} alt="" className="w-10 h-10 pixel-border object-cover" />
               ) : (
                 <div className="w-10 h-10 pixel-border bg-bg-secondary flex items-center justify-center">🎵</div>
               )}

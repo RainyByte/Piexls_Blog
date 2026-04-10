@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PixelCard, PixelTag } from "@/components/pixel";
+import { getMediaUrl } from "@/lib/media";
 import { Post } from "@/types";
 
 interface PostCardProps {
@@ -51,7 +52,7 @@ export default function PostCard({ post }: PostCardProps) {
         {post.cover_image && (
           <div className="overflow-hidden pixel-border">
             <img
-              src={post.cover_image}
+              src={getMediaUrl(post.cover_image)}
               alt={post.title}
               className="w-full h-44 object-cover"
             />

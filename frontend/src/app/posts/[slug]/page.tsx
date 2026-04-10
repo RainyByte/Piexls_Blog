@@ -4,6 +4,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
 import PostContent from "@/components/blog/PostContent";
 import { PixelCard, PixelTag } from "@/components/pixel";
+import { getMediaUrl } from "@/lib/media";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -77,7 +78,7 @@ export default async function PostPage({ params }: Props) {
               </div>
               {post.cover_image && (
                 <img
-                  src={post.cover_image}
+                  src={getMediaUrl(post.cover_image)}
                   alt={post.title}
                   className="w-full pixel-border mb-6"
                 />
